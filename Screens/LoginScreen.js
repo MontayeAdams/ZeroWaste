@@ -1,85 +1,65 @@
-import { View, Text, Image, SafeAreaView, TextInput, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { StatusBar } from 'expo-status-bar'
-import { useNavigation } from '@react-navigation/native'
-import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
-
+import React, { useState } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
+import Animated from 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function LoginScreen() {
     const navigation = useNavigation();
-  return (
-    <View className="bg-white h-full w-full">
-        <StatusBar style="light" />
-        <Image className="h-full w-full absolute" source={require('../assets/images/background.png')} />
-
-        {/* lights */}
-        <View className="flex-row justify-around w-full absolute">
-            <Animated.Image 
-                entering={FadeInUp.delay(200).duration(1000).springify()} 
-                source={require('../assets/images/light.png')} 
-                className="h-[225] w-[90]" 
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+    return (
+        <View style={{ flex: 1, backgroundColor: 'white'}}>
+            <StatusBar style="light" />
+            <Image
+                source={require('../assets/images/background.png')}
+                style={{ position: 'absolute', height: '100%', width: '100%' }}
             />
-            <Animated.Image 
-                entering={FadeInUp.delay(400).duration(1000).springify()} 
-                source={require('../assets/images/light.png')} 
-                className="h-[160] w-[65] opacity-75" 
-            />
-        </View>
 
-        {/* title and form */}
-        <View className="h-full w-full flex justify-around pt-40 pb-10">
-            
-            {/* title */}
-            <View className="flex items-center">
-                <Animated.Text 
-                    entering={FadeInUp.duration(1000).springify()} 
-                    className="text-white font-bold tracking-wider text-5xl">
+            {/* trees */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%', position: 'absolute'}}>
+                <Animated.Image
+                    source={require('../assets/images/trees3.png')}
+                    style={{marginTop:'58%', marginRight: '55%'}}
+                />
+               
+            </View>
+
+            {/* title and form */}
+            <View style={{ flex: 1, justifyContent: 'space-around', paddingTop: 10, paddingBottom: 10}}>
+                {/* title */}
+                <View style={{ alignItems: 'center' }}>
+                    <Animated.Text style={{ marginTop: 80, fontSize: 40, fontWeight: 'bold', color: 'white', transform: [{ translateY: 0 }] }}>
                         Login
-                </Animated.Text>
-            </View>
+                    </Animated.Text>
+                </View>
 
-            {/* form */}
-            <View className="flex items-center mx-5 space-y-4">
-                <Animated.View 
-                    entering={FadeInDown.duration(1000).springify()} 
-                    className="bg-black/5 p-5 rounded-2xl w-full">
-
-                    <TextInput
-                        placeholder="Email"
-                        placeholderTextColor={'gray'}
-                    />
-                </Animated.View>
-                <Animated.View 
-                    entering={FadeInDown.delay(200).duration(1000).springify()} 
-                    className="bg-black/5 p-5 rounded-2xl w-full mb-3">
-
-                    <TextInput
-                        placeholder="Password"
-                        placeholderTextColor={'gray'}
-                        secureTextEntry
-                    />
-                </Animated.View>
-
-                <Animated.View 
-                    className="w-full" 
-                    entering={FadeInDown.delay(400).duration(1000).springify()}>
-
-                    <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl mb-3">
-                        <Text className="text-xl font-bold text-white text-center">Login</Text>
-                    </TouchableOpacity>
-                </Animated.View>
-
-                <Animated.View 
-                    entering={FadeInDown.delay(600).duration(1000).springify()} 
-                    className="flex-row justify-center">
-
-                    <Text>Don't have an account? </Text>
-                    <TouchableOpacity onPress={()=> navigation.push('Signup')}>
-                        <Text className="text-sky-600">SignUp</Text>
-                    </TouchableOpacity>
-                </Animated.View>
+                {/* form */}
+                <View style={{ alignItems: 'center', marginHorizontal: 25, marginBottom: 80, marginTop: 80 }}>
+                    <Animated.View style={{ backgroundColor: 'rgba(0,0,0,0.1)', padding: 20, borderRadius: 20, width: '100%', marginBottom: 20 }}>
+                        <TextInput placeholder="Email" placeholderTextColor={'gray'} />
+                    </Animated.View>
+                    <Animated.View style={{ backgroundColor: 'rgba(0,0,0,0.1)', padding: 20, borderRadius: 20, width: '100%', marginBottom: 20, flexDirection: 'row', alignItems: 'center' }}>
+                        <TextInput placeholder="Password" placeholderTextColor={'gray'} secureTextEntry={!showPassword} style={{ flex: 1 }} />
+                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ alignItems: 'center', marginLeft: 10 }}>
+                            <Text style={{ color: 'skyblue' }}>
+                                <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="skyblue" />
+                            </Text>
+                        </TouchableOpacity>
+                    </Animated.View>
+                    <Animated.View style={{ width: '100' }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate('MainPage'); }} style={{ backgroundColor: 'skyblue', padding: 20, borderRadius: 20, marginBottom: 20 }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', textAlign: 'center', paddingHorizontal: 140 }}>Login</Text>
+                        </TouchableOpacity>
+                    </Animated.View>
+                    <Animated.View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                        <Text>Don't have an account? </Text>
+                        <TouchableOpacity onPress={() => navigation.push('Signup')}>
+                            <Text style={{ color: 'skyblue' }}>SignUp</Text>
+                        </TouchableOpacity>
+                    </Animated.View>
+                </View>
             </View>
         </View>
-    </View>
-  )
+    );
 }

@@ -3,12 +3,29 @@ import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import axios from 'axios';
 
 export default function SignupScreen() {
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const[name, setName] = useState("");
+  const[email, setEmail] = useState("");
+  const[password, setPassword] = useState("");
+  
+
+  const handleSubmit = async () => {
+    if (name === '' || email === '' || password == ''){
+      alert("All fields are required");
+      return;
+    }
+    const resp = await axios.post("http://localhost:8001/api/signup", {name, email, password });
+    console.log(resp.data)
+    alert("Sign Up Successful");
+  };
 
   return (
+    <KeyboardAwareScrollView>
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar style="light" />
       <Image
@@ -31,7 +48,7 @@ export default function SignupScreen() {
       {/* title and form */}
       <View style={{ flex: 1, justifyContent: 'space-around', paddingTop: 100}}>
         {/* title */}
-        <View style={{ alignItems: 'center', marginTop: 100 }}>
+        <View style={{ alignItems: 'center', marginTop: '40%' }}>
           <Text style={{ fontSize: 40, fontWeight: 'bold', color: 'white' }}>
             Sign Up
           </Text>
@@ -40,19 +57,19 @@ export default function SignupScreen() {
         {/* form */}
         <View style={{ alignItems: 'center', marginHorizontal: 25, marginBottom: 80, marginTop: 160 }}>
           <View style={{ backgroundColor: 'rgba(0,0,0,0.1)', padding: 20, borderRadius: 20, width: '100%', marginBottom: 20 }}>
-            <TextInput placeholder="Username" placeholderTextColor={'gray'} />
+            <TextInput value={name} onChangeText={text => setName(text)} placeholder="Username" placeholderTextColor={'gray'} />
           </View>
           <View style={{ backgroundColor: 'rgba(0,0,0,0.1)', padding: 20, borderRadius: 20, width: '100%', marginBottom: 20 }}>
-            <TextInput placeholder="Email" placeholderTextColor={'gray'} />
+            <TextInput value={email} onChangeText={text => setEmail(text)} placeholder="Email" placeholderTextColor={'gray'} />
           </View>
           <View style={{ backgroundColor: 'rgba(0,0,0,0.1)', padding: 20, borderRadius: 20, width: '100%', marginBottom: 20, flexDirection: 'row', alignItems: 'center' }}>
-            <TextInput placeholder="Password" placeholderTextColor={'gray'} secureTextEntry={!showPassword} style={{ flex: 1 }} />
+            <TextInput value={password} onChangeText={text => setPassword(text)} placeholder="Password" placeholderTextColor={'gray'} secureTextEntry={!showPassword} style={{ flex: 1 }} />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ alignItems: 'center', marginLeft: 10 }}>
               <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="skyblue" />
             </TouchableOpacity>
           </View>
           <View style={{ width: '100' }}>
-            <TouchableOpacity style={{ backgroundColor: 'skyblue', padding: 20, borderRadius: 20, marginBottom: 20 }}>
+            <TouchableOpacity onPress={handleSubmit} style={{ backgroundColor: 'skyblue', padding: 20, borderRadius: 20, marginBottom: 20 }}>
               <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', textAlign: 'center', paddingHorizontal: 132 }}>Sign Up</Text>
             </TouchableOpacity>
           </View>
@@ -65,5 +82,6 @@ export default function SignupScreen() {
         </View>
       </View>
     </View>
+    </KeyboardAwareScrollView>
   );
 }

@@ -18,6 +18,18 @@ MongoDB:
 - (you will need to start MongoDB first inorder for the server to connect to the database)
 -- brew services start mongodb-community@7.0
 
+Database Connection (keep all these terminals running at the same time): 
+in client folder (in another terminal):
+- lt --port 8000
+- paste url into config.js file and put /api after it
+- go to the url in a web browser, follow the steps to allow access
+
+in client folder (in another terminal):
+- npm start
+
+in server folder (in another terminal):
+- npm start
+- should say "db connected" if no errors
 
 
 

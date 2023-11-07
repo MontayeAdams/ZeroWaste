@@ -1,0 +1,1 @@
+export const API = 'https://rare-baboons-visit.loca.lt/api';

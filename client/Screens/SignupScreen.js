@@ -1,29 +1,49 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
+//import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import axios from 'axios';
+//import {API} from '../config';
+import { config } from 'dotenv';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from "../context/auth";
 
-export default function SignupScreen() {
-  const navigation = useNavigation();
+const SignUpScreen = ({ navigation} ) => {
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const[name, setName] = useState("");
   const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
   
+  // context
+  const [state, setState] = useContext(AuthContext)
 
   const handleSubmit = async () => {
-    if (name === '' || email === '' || password == ''){
+    if (name === '' || email === '' || password === '') {
       alert("All fields are required");
       return;
     }
-    const resp = await axios.post("http://localhost:8001/api/signup", {name, email, password });
-    console.log(resp.data)
-    alert("Sign Up Successful");
-  };
-
+  
+    try {
+      const { data } = await axios.post(`/signup`, { name, email, password });
+      if (data.error){
+        alert(data.error)
+    } else {
+      // save in context
+      setState(data);
+      // save response in async storage
+        await AsyncStorage.setItem('@auth', JSON.stringify(data));
+        console.log("SIGN UP SUCCESS => ", data);
+        alert("Sign up successful");
+        navigation.navigate("MainPage");
+    }
+  } catch (error) {
+    alert("Sign up failed. Try again.");
+    console.error(error);
+  }
+  };  
+  
   return (
     <KeyboardAwareScrollView>
     <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -69,9 +89,10 @@ export default function SignupScreen() {
             </TouchableOpacity>
           </View>
           <View style={{ width: '100' }}>
-            <TouchableOpacity onPress={handleSubmit} style={{ backgroundColor: 'skyblue', padding: 20, borderRadius: 20, marginBottom: 20 }}>
-              <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', textAlign: 'center', paddingHorizontal: 132 }}>Sign Up</Text>
+            <TouchableOpacity onPress={handleSubmit} style={style=styles.buttonStyle}>
+              <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
+            <Text style = {{ marginHorizontal: 24}}>{JSON.stringify({name, email, password})}</Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <Text>Already have an account? </Text>
@@ -85,3 +106,22 @@ export default function SignupScreen() {
     </KeyboardAwareScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  buttonStyle:{
+    backgroundColor: 'skyblue', 
+    padding: 15, 
+    borderRadius: 20, 
+    marginBottom: 20 
+  },
+
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'bold', 
+    color: 'white', 
+    textAlign: 'center', 
+    paddingHorizontal: 125 
+  }
+})
+
+export default SignUpScreen;

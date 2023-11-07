@@ -1,0 +1,1 @@
+export const API = 'https://spicy-clocks-care.loca.lt/api';

@@ -10,22 +10,29 @@ import Settings from "./Screens/Settings";
 import LoginScreen from "./Screens/LoginScreen";
 import SignupScreen from "./Screens/SignupScreen";
 
+import {AuthProvider} from "./context/auth";
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
+
   return (
+    
     <NavigationContainer>
+    <AuthProvider>
       <Stack.Navigator
         initialRouteName="Login"
-        screenOptions={{ headerShown: false }}
-      >
+        screenOptions={{ headerShown: false }} >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="MainPage" component={MainPage} />
       </Stack.Navigator>
+      </AuthProvider>
     </NavigationContainer>
   );
+
+  
 }
 
 function MainPage() {
